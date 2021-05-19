@@ -14,3 +14,5 @@ Route::post('/users', [UserController::class, 'store']);
 Route::get('/posts', [PostController::class, 'index']);
 Route::post('/posts', [PostController::class, 'store']);
 
+Route::get('/posts/lastCommented', [CommentController::class, 'lastCommented']);
+Route::post('/comments', [CommentController::class, 'store']);
