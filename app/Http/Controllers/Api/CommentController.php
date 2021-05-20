@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,7 +37,8 @@ class CommentController extends Controller
 
         if($comment) {
             $post = Post::where('id', $comment[0]->post_id)->get();
-            return response()->json([ 'comment'=>$comment, 'post'=>$post]);
+            $user = User::where('id', $comment[0]->user_id)->get('name');
+            return response()->json([ 'comment'=>$comment, 'post'=>$post, 'user'=> $user]);
 
         }
 
