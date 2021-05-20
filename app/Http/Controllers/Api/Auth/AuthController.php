@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\AuthRequest;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -22,18 +23,22 @@ class AuthController extends Controller
     {
         $credentials = $request->only([self::USERNAME_FIELD, self::PASSWORD_FIELD]);
         $token = Auth::attempt($credentials);
-        return ! $token
+        return !$token
             ? response()->json(['error' => self::FAILURE_MESSAGE], 401)
-            : $this->respondWithToken($token);
+            : $this->respondWithToken($token, $request);
     }
 
     public function respondWithToken(string $token): JsonResponse
     {
+
+        $user = User::where('id', Auth::user()->id)->get();
+
         return response()->json([
+            'user' => $user,
             'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => 3600,
-        ], 200);
+            'expires_in' => 3600
+        ]);
     }
 
     public function refresh(): JsonResponse
@@ -46,5 +51,4 @@ class AuthController extends Controller
         Auth::logout();
         return response()->json([]);
     }
-
 }

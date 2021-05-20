@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,11 +28,18 @@ class CommentController extends Controller
     public function lastCommented()
     {
         $datauser = Auth::user()->id;
-        $b = Comment::where('user_id', $datauser)
+        $comment = Comment::where('user_id', $datauser)
             ->orderBy('created_at', 'desc')
             ->limit(1)
             ->get();
 
-        return response()->json($b);
+
+        if($comment) {
+            $post = Post::where('id', $comment[0]->post_id)->get();
+            return response()->json([ 'comment'=>$comment, 'post'=>$post]);
+
+        }
+
+        return response()->json($comment);
     }
 }

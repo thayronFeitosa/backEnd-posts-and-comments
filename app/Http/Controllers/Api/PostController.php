@@ -18,7 +18,9 @@ class PostController extends Controller
 
     public function index(): JsonResponse
     {
+            $size = Post::all();
         return response()->json(Post::orderBy('created_at', 'desc')->paginate(5));
+        // return response()->json($size);
     }
 
     public function store(PostRequest $request): JsonResponse
